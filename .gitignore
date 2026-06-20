@@ -1,0 +1,28 @@
+# ── Unrelated projects (not part of this repo) ──
+/HabitTracker/
+/eys/
+
+# ── Build artifacts ──
+build/
+DerivedData/
+*.xcarchive
+*.xcodeproj/
+.build/
+SourcePackages/
+*.ipa
+*.dSYM
+
+# ── macOS ──
+.DS_Store
+
+# ── SECRETS — NEVER COMMIT ──
+*.p8
+*.mobileprovision
+*.cer
+*.p12
+*.certSigningRequest
+asc.env
+**/asc.env
+**/private_keys/
+secrets/
+GoogleService-Info.plist

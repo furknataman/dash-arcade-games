@@ -1,0 +1,43 @@
+{
+  "identifier" : "B1A2C3D4-1111-4000-8000-A1B2C3D4E5F6",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "20000010",
+      "localizations" : [
+        {
+          "description" : "Tüm reklamları kaldır, kesintisiz oyna.",
+          "displayName" : "Reklamları Kaldır",
+          "locale" : "tr_TR"
+        },
+        {
+          "description" : "Remove all ads and play uninterrupted.",
+          "displayName" : "Remove Ads",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.solvy.gravitydash.removeads",
+      "referenceName" : "Remove Ads",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
