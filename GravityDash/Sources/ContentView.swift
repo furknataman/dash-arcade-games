@@ -62,15 +62,15 @@ final class GameHost: ObservableObject {
             // never request real ads while developing. Release uses the real
             // ids; simulators auto-serve test ads, and you can add a physical
             // device hash below to test the real-id build safely.
+            // Add your own device's hash here to keep seeing TEST ads on a real
+            // device (so you can tap safely). Others get real ads.
             let testDeviceIDs: [String] = []  // e.g. ["2077ef9a63d2b398840261c8221a0c9b"]
-            // Real ads ONLY in the public App Store build. DEBUG *and* TestFlight
-            // (sandbox receipt) serve Google TEST ads, so you can tap your own
-            // ads while testing without risking an AdMob ban.
-            let isSandbox = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+            // Xcode/simulator (DEBUG): Google TEST ads. TestFlight + App Store:
+            // REAL ads. ⚠️ Don't tap your own real ads on a TestFlight device.
             #if DEBUG
             let useTestAds = true
             #else
-            let useTestAds = isSandbox
+            let useTestAds = false
             #endif
             let rewardedID = useTestAds ? "ca-app-pub-3940256099942544/1712485313" : cfg.rewardedAdUnitID
             let interstitialID = useTestAds ? "ca-app-pub-3940256099942544/4411468910" : cfg.interstitialAdUnitID
@@ -95,11 +95,10 @@ final class GameHost: ObservableObject {
         if useStub {
             self.menuBanner = nil
         } else if let bannerID = cfg.bannerAdUnitID {
-            let isSandbox = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
             #if DEBUG
             let id = "ca-app-pub-3940256099942544/2934735716"        // Google TEST banner
             #else
-            let id = isSandbox ? "ca-app-pub-3940256099942544/2934735716" : bannerID
+            let id = bannerID                                         // real on TestFlight + App Store
             #endif
             self.menuBanner = AnyView(BannerAdView(adUnitID: id))
         } else {
