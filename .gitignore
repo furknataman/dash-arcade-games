@@ -26,3 +26,6 @@ asc.env
 **/private_keys/
 secrets/
 GoogleService-Info.plist
+
+# Other unrelated app projects
+/ilac/

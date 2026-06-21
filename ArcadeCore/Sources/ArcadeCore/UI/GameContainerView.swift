@@ -10,14 +10,18 @@ public struct GameContainerView: View {
     @ObservedObject private var store: StoreManager
     private let config: GameConfig
     private let scene: SKScene
+    /// Optional banner shown on the main menu only. The app supplies it (so the
+    /// pure core stays free of any ad SDK). Hidden when ads are removed.
+    private let menuBanner: AnyView?
 
     public init(model: GameModel, storage: GameStorage, store: StoreManager,
-                config: GameConfig, scene: SKScene) {
+                config: GameConfig, scene: SKScene, menuBanner: AnyView? = nil) {
         self.model = model
         self.storage = storage
         self.store = store
         self.config = config
         self.scene = scene
+        self.menuBanner = menuBanner
     }
 
     public var body: some View {
@@ -27,7 +31,8 @@ public struct GameContainerView: View {
 
             switch model.phase {
             case .ready:
-                MainMenuView(model: model, storage: storage, config: config)
+                MainMenuView(model: model, storage: storage, config: config,
+                             banner: storage.removeAdsPurchased ? nil : menuBanner)
                     .transition(.opacity)
             case .playing:
                 HUDView(model: model, config: config)

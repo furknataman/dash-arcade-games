@@ -46,7 +46,7 @@ final class FlapScene: ScrollingGameScene {
         RGBA(hex: 0x49C628), RGBA(hex: 0x40C4FF), RGBA(hex: 0xB06CF0),
         RGBA(hex: 0xFF9F40), RGBA(hex: 0xFF5C6B), RGBA(hex: 0xFFD13F)
     ]
-    private let tierStep: CGFloat = 40
+    private let tierStep: CGFloat = 60
     private var currentTier = -1
     private var pipeColor = RGBA(hex: 0x49C628)
 
@@ -326,6 +326,7 @@ final class FlapScene: ScrollingGameScene {
     }
 
     // MARK: Tier
+    /// Moderate tier shift: gentle pipe + score color change, soft haptic only.
     private func applyTier(_ tier: Int) {
         currentTier = tier
         let c = tierColors[tier % tierColors.count]
@@ -334,13 +335,7 @@ final class FlapScene: ScrollingGameScene {
             model?.scoreTint = nil
         } else {
             model?.scoreTint = c
-            Haptics.impact(.medium)
-            screenShake(intensity: 5, duration: 0.2)
-            let flash = SKSpriteNode(color: c.uiColor, size: size)
-            flash.position = CGPoint(x: size.width / 2, y: size.height / 2)
-            flash.zPosition = 28; flash.alpha = 0
-            addChild(flash)
-            flash.run(.sequence([.fadeAlpha(to: 0.14, duration: 0.08), .fadeOut(withDuration: 0.3), .removeFromParent()]))
+            Haptics.impact(.light, intensity: 0.5)
         }
     }
 }

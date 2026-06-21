@@ -51,7 +51,7 @@ final class GravityFlipScene: ScrollingGameScene {
         RGBA(hex: 0xFF5C6B), RGBA(hex: 0xFF9F40), RGBA(hex: 0xFFD13F),
         RGBA(hex: 0xA8E05F), RGBA(hex: 0x40C4FF), RGBA(hex: 0xB06CF0)
     ]
-    private let tierStep: CGFloat = 25
+    private let tierStep: CGFloat = 75
     private var currentTier = -1
     private var currentObstacleColor = RGBA(hex: 0xFF5C6B)
 
@@ -288,7 +288,8 @@ final class GravityFlipScene: ScrollingGameScene {
         }
     }
 
-    /// Advance to a new color tier: shift obstacle + score color, flash & buzz.
+    /// Cross into a new color tier. Kept moderate: a gentle obstacle + score
+    /// color shift and a soft haptic — no full-screen flash, no shake.
     private func applyTier(_ tier: Int) {
         currentTier = tier
         let color = tierColors[tier % tierColors.count]
@@ -297,15 +298,7 @@ final class GravityFlipScene: ScrollingGameScene {
             model?.scoreTint = nil
         } else {
             model?.scoreTint = color
-            Haptics.impact(.medium)
-            screenShake(intensity: 6, duration: 0.2)
-            let flash = SKSpriteNode(color: color.uiColor, size: size)
-            flash.position = CGPoint(x: size.width / 2, y: size.height / 2)
-            flash.zPosition = 28
-            flash.alpha = 0
-            addChild(flash)
-            flash.run(.sequence([.fadeAlpha(to: 0.16, duration: 0.08),
-                                 .fadeOut(withDuration: 0.32), .removeFromParent()]))
+            Haptics.impact(.light, intensity: 0.5)
         }
     }
 

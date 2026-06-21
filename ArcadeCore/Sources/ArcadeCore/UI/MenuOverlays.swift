@@ -6,6 +6,7 @@ public struct MainMenuView: View {
     @ObservedObject var storage: GameStorage
     @ObservedObject var gameCenter = GameCenter.shared
     let config: GameConfig
+    var banner: AnyView? = nil
     @State private var pulse = false
 
     public var body: some View {
@@ -72,6 +73,11 @@ public struct MainMenuView: View {
                 .padding(.top, 4)
 
                 Spacer()
+
+                // Banner ad lives only here (home screen), never during play.
+                if let banner {
+                    banner.frame(maxWidth: .infinity)
+                }
             }
             .padding()
         }

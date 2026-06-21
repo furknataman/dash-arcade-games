@@ -10,6 +10,7 @@ final class GameHost: ObservableObject {
     let store: StoreManager
     let ads: AdsProviding
     let scene: FlapScene
+    let menuBanner: AnyView?
 
     init() {
         let cfg = GameConfig(
@@ -30,6 +31,9 @@ final class GameHost: ObservableObject {
             ],
             removeAdsProductID: "com.solvy.flapdash.removeads",
             interstitialEveryDeaths: 3,
+            // Google TEST banner placeholder — replace with FlapDash's real
+            // banner unit id once created in AdMob.
+            bannerAdUnitID: "ca-app-pub-3940256099942544/2934735716",
             leaderboardID: "flapdash.high_score"
         )
         self.config = cfg
@@ -70,6 +74,20 @@ final class GameHost: ObservableObject {
         self.scene = FlapScene(size: CGSize(width: 390, height: 844),
                                config: cfg, model: model, storage: storage, ads: adsProvider)
 
+        if useStub {
+            self.menuBanner = nil
+        } else if let bannerID = cfg.bannerAdUnitID {
+            let isSandbox = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+            #if DEBUG
+            let id = "ca-app-pub-3940256099942544/2934735716"
+            #else
+            let id = isSandbox ? "ca-app-pub-3940256099942544/2934735716" : bannerID
+            #endif
+            self.menuBanner = AnyView(BannerAdView(adUnitID: id))
+        } else {
+            self.menuBanner = nil
+        }
+
         store.onEntitlement = { [storage] productID in
             if productID == cfg.removeAdsProductID { storage.setRemoveAdsPurchased(true) }
         }
@@ -84,6 +102,7 @@ struct ContentView: View {
                           storage: host.storage,
                           store: host.store,
                           config: host.config,
-                          scene: host.scene)
+                          scene: host.scene,
+                          menuBanner: host.menuBanner)
     }
 }

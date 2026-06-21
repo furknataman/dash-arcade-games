@@ -13,6 +13,8 @@ final class GameHost: ObservableObject {
     let store: StoreManager
     let ads: AdsProviding
     let scene: GravityFlipScene
+    /// Home-screen banner (nil in automated runs / when ads are removed).
+    let menuBanner: AnyView?
 
     init() {
         let cfg = GameConfig(
@@ -35,6 +37,7 @@ final class GameHost: ObservableObject {
             interstitialEveryDeaths: 3,
             rewardedAdUnitID: "ca-app-pub-1226731828520786/6179050056",
             interstitialAdUnitID: "ca-app-pub-1226731828520786/2259986342",
+            bannerAdUnitID: "ca-app-pub-1226731828520786/5972723422",
             leaderboardID: "gravitydash.high_score"
         )
         self.config = cfg
@@ -86,6 +89,23 @@ final class GameHost: ObservableObject {
         self.scene = GravityFlipScene(size: CGSize(width: 390, height: 844),
                                       config: cfg, model: model, storage: storage, ads: adsProvider)
 
+        // Home-screen banner: real id only in the public App Store build;
+        // DEBUG + TestFlight use Google's TEST banner (ban-safe). None in
+        // automated runs.
+        if useStub {
+            self.menuBanner = nil
+        } else if let bannerID = cfg.bannerAdUnitID {
+            let isSandbox = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+            #if DEBUG
+            let id = "ca-app-pub-3940256099942544/2934735716"        // Google TEST banner
+            #else
+            let id = isSandbox ? "ca-app-pub-3940256099942544/2934735716" : bannerID
+            #endif
+            self.menuBanner = AnyView(BannerAdView(adUnitID: id))
+        } else {
+            self.menuBanner = nil
+        }
+
         // Map verified purchases to entitlements.
         store.onEntitlement = { [storage] productID in
             if productID == cfg.removeAdsProductID {
@@ -103,6 +123,7 @@ struct ContentView: View {
                           storage: host.storage,
                           store: host.store,
                           config: host.config,
-                          scene: host.scene)
+                          scene: host.scene,
+                          menuBanner: host.menuBanner)
     }
 }

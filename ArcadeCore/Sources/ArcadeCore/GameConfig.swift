@@ -33,6 +33,8 @@ public struct GameConfig {
     /// real ids (and the GADApplicationIdentifier in Info.plist) before launch.
     public var rewardedAdUnitID: String
     public var interstitialAdUnitID: String
+    /// AdMob banner unit id for the home screen. nil hides the banner.
+    public var bannerAdUnitID: String?
     /// Game Center leaderboard id (created in App Store Connect). nil disables it.
     public var leaderboardID: String?
 
@@ -54,6 +56,7 @@ public struct GameConfig {
         interstitialEveryDeaths: Int = 3,
         rewardedAdUnitID: String = "ca-app-pub-3940256099942544/1712485313",
         interstitialAdUnitID: String = "ca-app-pub-3940256099942544/4411468910",
+        bannerAdUnitID: String? = nil,
         leaderboardID: String? = nil
     ) {
         self.displayName = displayName
@@ -73,6 +76,7 @@ public struct GameConfig {
         self.interstitialEveryDeaths = interstitialEveryDeaths
         self.rewardedAdUnitID = rewardedAdUnitID
         self.interstitialAdUnitID = interstitialAdUnitID
+        self.bannerAdUnitID = bannerAdUnitID
         self.leaderboardID = leaderboardID
     }
 

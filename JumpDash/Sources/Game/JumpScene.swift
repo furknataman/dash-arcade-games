@@ -40,7 +40,7 @@ final class JumpScene: ScrollingGameScene {
         RGBA(hex: 0xFF5C8A), RGBA(hex: 0xFFA63F), RGBA(hex: 0x49E0C0),
         RGBA(hex: 0x6CC0FF), RGBA(hex: 0xC58BFF), RGBA(hex: 0xFFE08A)
     ]
-    private let tierStep: CGFloat = 40
+    private let tierStep: CGFloat = 75
     private var currentTier = -1
     private var hurdleColor = RGBA(hex: 0xFF5C8A)
 
@@ -285,22 +285,19 @@ final class JumpScene: ScrollingGameScene {
     }
 
     // MARK: Tier
+    /// Moderate tier shift: a gentle background-gradient flow (this game's
+    /// signature) plus a soft hurdle + score color change. No flash, no shake.
     private func applyTier(_ tier: Int) {
         currentTier = tier
         hurdleColor = hurdleColors[tier % hurdleColors.count]
         let bg = tierColors[tier % tierColors.count]
-        background.texture = .verticalGradient(size: size, top: bg.lighter(0.08).uiColor, bottom: bg.darker(0.03).uiColor)
-        if tier == 0 {
-            model?.scoreTint = nil
-        } else {
-            model?.scoreTint = hurdleColor
-            Haptics.impact(.medium)
-            screenShake(intensity: 5, duration: 0.2)
-            let flash = SKSpriteNode(color: hurdleColor.uiColor, size: size)
-            flash.position = CGPoint(x: size.width / 2, y: size.height / 2)
-            flash.zPosition = 28; flash.alpha = 0
-            addChild(flash)
-            flash.run(.sequence([.fadeAlpha(to: 0.12, duration: 0.08), .fadeOut(withDuration: 0.3), .removeFromParent()]))
+        let fade = SKAction.customAction(withDuration: 0.6) { [weak self] _, _ in
+            guard let self else { return }
+            self.background.texture = .verticalGradient(
+                size: self.size, top: bg.lighter(0.08).uiColor, bottom: bg.darker(0.03).uiColor)
         }
+        background.run(fade)
+        model?.scoreTint = (tier == 0) ? nil : hurdleColor
+        if tier > 0 { Haptics.impact(.light, intensity: 0.5) }
     }
 }
